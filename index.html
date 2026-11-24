@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>ลอยกระทงออนไลน์ | Loy Krathong Online</title>
+  <meta name="description" content="ร่วมลอยกระทงออนไลน์ เลือกกระทงได้ 32 แบบ พร้อมเขียนคำอธิษฐานและชมพลุสวยงาม รองรับทุกอุปกรณ์">
+  <meta property="og:title" content="ลอยกระทงออนไลน์ 32 แบบ | Loy Krathong Online">
+  <meta property="og:description" content="เลือกกระทงที่คุณชอบจาก 32 แบบ เขียนคำอธิษฐาน และร่วมลอยกระทงกลางคืนพระจันทร์เต็มดวงไปพร้อมกัน">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#090d24">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    * { font-family: 'Prompt', sans-serif; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100dvh;
+      overflow: hidden;
+      background: linear-gradient(180deg, #060919 0%, #11183c 42%, #24194d 62%, #0c1b3a 63%, #061026 100%);
+      color: #f8fafc;
+      user-select: none;
+    }
+    .safe-top { padding-top: max(0.75rem, env(safe-area-inset-top)); }
+    .safe-bottom { padding-bottom: max(0.75rem, env(safe-area-inset-bottom)); }
+    .glass {
+      background: rgba(15, 23, 52, 0.65);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+    .moon {
+      position: absolute;
+      top: 9%;
+      right: 11%;
+      width: clamp(72px, 12vw, 130px);
+      height: clamp(72px, 12vw, 130px);
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #fffef2 0%, #fde68a 58%, #f59e0b 100%);
+      box-shadow: 0 0 40px 10px rgba(253, 224, 71, 0.35), 0 0 100px 30px rgba(251, 191, 36, 0.18);
+      z-index: 2;
+      pointer-events: none;
+    }
+    .moon-reflect {
+      position: absolute;
+      top: 63%;
+      right: 11%;
+      width: clamp(80px, 14vw, 150px);
+      height: 30%;
+      background: linear-gradient(180deg, rgba(253, 224, 71, 0.25) 0%, rgba(253, 224, 71, 0.05) 60%, transparent 100%);
+      filter: blur(12px);
+      z-index: 2;
+      pointer-events: none;
+      animation: shimmer 4s ease-in-out infinite;
+    }
+    @keyframes shimmer {
+      0%, 100% { transform: scaleX(1); opacity: 0.7; }
+      50% { transform: scaleX(1.22); opacity: 1; }
+    }
+    .star {
+      position: absolute;
+      background: #fff;
+      border-radius: 50%;
+      animation: twinkle var(--dur) ease-in-out infinite;
+      pointer-events: none;
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.25); }
+    }
+    .lantern {
+      position: absolute;
+      width: 18px;
+      height: 24px;
+      background: radial-gradient(circle at 50% 65%, #fef08a, #f97316 70%, #9a3412);
+      border-radius: 45% 45% 25% 25%;
+      box-shadow: 0 0 12px rgba(251, 146, 60, 0.75);
+      pointer-events: none;
+      opacity: 0;
+      animation: riseLantern var(--dur) linear infinite;
+    }
+    @keyframes riseLantern {
+      0% { transform: translateY(0) translateX(0) scale(0.7); opacity: 0; }
+      15% { opacity: 0.85; }
+      85% { opacity: 0.7; }
+      100% { transform: translateY(-55vh) translateX(var(--drift)) scale(0.35); opacity: 0; }
+    }
+    .river-area {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 39%;
+      z-index: 10;
+      overflow: hidden;
+    }
+    .wave-line {
+      position: absolute;
+      left: -10%;
+      width: 120%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(147, 197, 253, 0.18), transparent);
+      animation: waveMove 7s ease-in-out infinite;
+      pointer-events: none;
+    }
+    @keyframes waveMove {
+      0%, 100% { transform: translateX(-3%); }
+      50% { transform: translateX(3%); }
+    }
+    .krathong-node {
+      position: absolute;
+      cursor: pointer;
+      will-change: transform;
+      transition: filter 0.2s ease;
+    }
+    .krathong-node:hover {
+      filter: drop-shadow(0 0 12px rgba(253, 224, 71, 0.85));
+      z-index: 90 !important;
+    }
+    .krathong-bob {
+      animation: bobbing 3.2s ease-in-out infinite;
+    }
+    @keyframes bobbing {
+      0%, 100% { transform: translateY(0px) rotate(-1.5deg); }
+      50% { transform: translateY(-5px) rotate(1.5deg); }
+    }
+    .candle-flame {
+      transform-origin: center bottom;
+      animation: flicker 0.9s ease-in-out infinite alternate;
+    }
+    @keyframes flicker {
+      0% { transform: scale(0.92) rotate(-2deg); opacity: 0.88; }
+      100% { transform: scale(1.08) rotate(2deg); opacity: 1; }
+    }
+    .krathong-tooltip {
+      opacity: 0;
+      transform: translate(-50%, 6px);
+      transition: all 0.2s ease;
+      pointer-events: none;
+    }
+    @media (hover: hover) {
+      .krathong-node:hover .krathong-tooltip {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 7, 18, 0.72);
+      backdrop-filter: blur(6px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .modal-backdrop.active { display: flex; }
+    @media (max-width: 767px) {
+      .modal-sheet-wrap { align-items: flex-end !important; padding: 0 !important; }
+      .modal-sheet {
+        width: 100% !important;
+        max-width: 100% !important;
+        max-height: 92dvh !important;
+        border-bottom-left-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+        border-top-left-radius: 1.5rem !important;
+        border-top-right-radius: 1.5rem !important;
+      }
+    }
+    input, textarea { font-size: 16px !important; }
+    .touch-btn { min-height: 44px; min-width: 44px; }
+    .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+    .custom-scroll::-webkit-scrollbar-track { background: rgba(255,255,255,0.04); border-radius: 99px; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.22); border-radius: 99px; }
+  </style>
+</head>
+<body>
+  <canvas id="fxCanvas" class="fixed inset-0 w-full h-full pointer-events-none z-[4]"></canvas>
+  <div id="skyLayer" class="fixed inset-x-0 top-0 h-[62%] z-[3]"></div>
+  <div class="moon"></div>
+  <div class="moon-reflect"></div>
+
+  <header class="fixed top-0 inset-x-0 z-30 safe-top px-3 sm:px-6 flex items-center justify-between gap-2 pointer-events-none">
+    <div class="glass rounded-2xl px-3 sm:px-4 py-2 flex items-center gap-2 sm:gap-3 pointer-events-auto shadow-lg">
+      <span class="text-xl sm:text-2xl">🌕</span>
+      <div class="leading-tight">
+        <h1 class="text-sm sm:text-base font-bold bg-gradient-to-r from-amber-200 via-yellow-300 to-pink-300 bg-clip-text text-transparent">ลอยกระทงออนไลน์</h1>
+        <p id="modeBadge" class="text-[10px] sm:text-xs text-slate-300">กำลังเชื่อมต่อ...</p>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-1.5 sm:gap-2 pointer-events-auto">
+      <div class="glass rounded-2xl px-2.5 sm:px-4 py-2 flex items-center gap-2.5 sm:gap-4 text-xs sm:text-sm font-medium shadow-lg">
+        <div class="flex items-center gap-1" title="จำนวนผู้เข้าชมทั้งหมด">
+          <span>👁️</span>
+          <span id="statVisitors">0</span>
+        </div>
+        <div class="w-px h-4 bg-white/15"></div>
+        <div class="flex items-center gap-1" title="จำนวนกระทงที่ลอยแล้ว">
+          <span>🪷</span>
+          <span id="statKrathongs">0</span>
+        </div>
+      </div>
+      <button id="btnAdmin" class="glass touch-btn rounded-2xl px-3 flex items-center justify-center hover:bg-white/15 transition shadow-lg" title="ระบบหลังบ้าน">
+        🔒
+      </button>
+    </div>
+  </header>
+
+  <main id="riverLayer" class="river-area"></main>
+
+  <nav class="fixed bottom-0 inset-x-0 z-30 safe-bottom px-3 sm:px-6 flex items-center justify-center gap-2.5 sm:gap-3 pointer-events-none">
+    <button id="btnOpenCreate" class="pointer-events-auto touch-btn px-5 sm:px-7 py-3 rounded-full font-semibold text-sm sm:text-base bg-gradient-to-r from-amber-400 via-orange-400 to-pink-500 text-slate-950 shadow-lg shadow-amber-500/30 hover:brightness-110 active:scale-95 transition flex items-center gap-2">
+      <span>🪷</span>
+      <span>สร้างกระทง</span>
+    </button>
+    <button id="btnOpenBoard" class="pointer-events-auto glass touch-btn px-4 sm:px-6 py-3 rounded-full font-medium text-sm sm:text-base text-white hover:bg-white/15 active:scale-95 transition flex items-center gap-2 shadow-lg">
+      <span>📜</span>
+      <span>รวมคำอธิษฐาน</span>
+    </button>
+  </nav>
+
+  <div id="modalCreate" class="modal-backdrop modal-sheet-wrap">
+    <div class="modal-sheet glass rounded-3xl w-full max-w-4xl max-h-[90dvh] flex flex-col overflow-hidden shadow-2xl">
+      <div class="px-5 py-4 border-b border-white/10 flex items-center justify-between">
+        <div>
+          <h2 class="text-lg font-bold text-amber-200">เลือกกระทงและเขียนคำอธิษฐาน</h2>
+          <p class="text-xs text-slate-300">มีให้เลือก 32 แบบ แบ่งตาม 4 หมวดหมู่</p>
+        </div>
+        <button data-close="modalCreate" class="touch-btn rounded-xl hover:bg-white/10 text-slate-300 text-xl">✕</button>
+      </div>
+
+      <div class="p-4 sm:p-5 overflow-y-auto custom-scroll space-y-4">
+        <div class="flex flex-col md:flex-row gap-4 items-center bg-slate-950/45 border border-white/10 rounded-2xl p-4">
+          <div id="previewBox" class="w-32 h-32 shrink-0 flex items-center justify-center bg-gradient-to-b from-indigo-950/80 to-blue-950/80 rounded-2xl border border-white/10"></div>
+          <div class="flex-1 w-full space-y-2.5 text-center md:text-left">
+            <div class="flex flex-wrap items-center justify-center md:justify-between gap-2">
+              <div>
+                <span id="previewCat" class="text-[11px] px-2.5 py-0.5 rounded-full bg-amber-400/20 text-amber-200"></span>
+                <h3 id="previewName" class="text-base sm:text-lg font-semibold mt-1"></h3>
+              </div>
+              <button id="btnRandom" type="button" class="touch-btn px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-xs sm:text-sm font-medium transition">
+                🎲 สุ่มกระทง
+              </button>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+              <input id="inputName" type="text" maxlength="50" placeholder="ชื่อผู้ลอย (เช่น เอ็ม)" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/80 border border-white/15 focus:outline-none focus:border-amber-400 text-white placeholder-slate-400">
+              <input id="inputWish" type="text" maxlength="250" placeholder="คำอธิษฐานของคุณ..." class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/80 border border-white/15 focus:outline-none focus:border-amber-400 text-white placeholder-slate-400">
+            </div>
+          </div>
+        </div>
+
+        <div id="catTabs" class="flex gap-2 overflow-x-auto custom-scroll pb-1"></div>
+
+        <div id="krathongGrid" class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-8 gap-2.5"></div>
+      </div>
+
+      <div class="px-5 py-3.5 border-t border-white/10 safe-bottom flex items-center justify-end gap-3 bg-slate-950/40">
+        <button data-close="modalCreate" class="touch-btn px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-sm">ยกเลิก</button>
+        <button id="btnLaunch" class="touch-btn px-6 py-2.5 rounded-xl font-semibold text-sm sm:text-base bg-gradient-to-r from-amber-400 to-pink-500 text-slate-950 hover:brightness-110 transition">
+          อธิษฐานและปล่อยกระทง ✨
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modalWish" class="modal-backdrop">
+    <div class="glass rounded-3xl w-full max-w-md overflow-hidden shadow-2xl p-6 text-center space-y-4 relative">
+      <button data-close="modalWish" class="touch-btn absolute top-3 right-3 rounded-xl hover:bg-white/10 text-slate-300 text-lg">✕</button>
+      <div id="wishModalSvg" class="w-36 h-36 mx-auto flex items-center justify-center"></div>
+      <div class="space-y-1">
+        <span id="wishModalCat" class="text-xs px-3 py-0.5 rounded-full bg-amber-400/20 text-amber-200"></span>
+        <h3 id="wishModalName" class="text-xl font-bold text-white pt-1"></h3>
+        <p id="wishModalKName" class="text-xs text-slate-300"></p>
+      </div>
+      <div class="bg-slate-950/50 border border-white/10 rounded-2xl p-4 text-sm sm:text-base text-amber-100 leading-relaxed break-words" id="wishModalText"></div>
+      <p id="wishModalTime" class="text-xs text-slate-400"></p>
+    </div>
+  </div>
+
+  <div id="modalBoard" class="modal-backdrop modal-sheet-wrap">
+    <div class="modal-sheet glass rounded-3xl w-full max-w-4xl max-h-[88dvh] flex flex-col overflow-hidden shadow-2xl">
+      <div class="px-5 py-4 border-b border-white/10 flex items-center justify-between gap-3">
+        <h2 class="text-lg font-bold text-amber-200">📜 รวมคำอธิษฐานทั้งหมด</h2>
+        <button data-close="modalBoard" class="touch-btn rounded-xl hover:bg-white/10 text-slate-300 text-xl">✕</button>
+      </div>
+      <div class="p-4 border-b border-white/10">
+        <input id="boardSearch" type="text" placeholder="ค้นหาชื่อผู้ลอย หรือ คำอธิษฐาน..." class="w-full px-4 py-2.5 rounded-xl bg-slate-900/80 border border-white/15 focus:outline-none focus:border-amber-400 text-white placeholder-slate-400">
+      </div>
+      <div id="boardList" class="p-4 overflow-y-auto custom-scroll grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+    </div>
+  </div>
+
+  <div id="modalAdminLogin" class="modal-backdrop">
+    <div class="glass rounded-3xl w-full max-w-sm p-6 space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-bold text-amber-200">🔒 เข้าสู่ระบบหลังบ้าน</h2>
+        <button data-close="modalAdminLogin" class="touch-btn rounded-xl hover:bg-white/10 text-slate-300">✕</button>
+      </div>
+      <input id="adminPassInput" type="password" placeholder="กรอกรหัสผ่านแอดมิน (ค่าเริ่มต้น 1234)" class="w-full px-4 py-2.5 rounded-xl bg-slate-900/80 border border-white/15 focus:outline-none focus:border-amber-400 text-white">
+      <p id="adminLoginErr" class="text-xs text-rose-400 hidden"></p>
+      <button id="btnAdminSubmit" class="touch-btn w-full py-2.5 rounded-xl font-semibold bg-amber-400 text-slate-950 hover:brightness-110 transition">เข้าสู่ระบบ</button>
+    </div>
+  </div>
+
+  <div id="modalAdminDash" class="modal-backdrop modal-sheet-wrap">
+    <div class="modal-sheet glass rounded-3xl w-full max-w-5xl max-h-[90dvh] flex flex-col overflow-hidden shadow-2xl">
+      <div class="px-5 py-4 border-b border-white/10 flex flex-wrap items-center justify-between gap-2">
+        <h2 class="text-lg font-bold text-amber-200">⚙️ แดชบอร์ดผู้ดูแลระบบ</h2>
+        <div class="flex items-center gap-2">
+          <button id="btnAdminRefresh" class="touch-btn px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-xs sm:text-sm">🔄 รีเฟรช</button>
+          <button id="btnAdminLogout" class="touch-btn px-3 py-1.5 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-200 text-xs sm:text-sm">ออกจากระบบ</button>
+          <button data-close="modalAdminDash" class="touch-btn rounded-xl hover:bg-white/10 text-slate-300 text-lg">✕</button>
+        </div>
+      </div>
+
+      <div class="p-4 sm:p-5 overflow-y-auto custom-scroll space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div class="bg-slate-950/50 border border-white/10 rounded-2xl p-4">
+            <p class="text-xs text-slate-400">ผู้เข้าชมทั้งหมด</p>
+            <p id="admVisitors" class="text-2xl font-bold text-sky-300 mt-1">0</p>
+          </div>
+          <div class="bg-slate-950/50 border border-white/10 rounded-2xl p-4">
+            <p class="text-xs text-slate-400">กระทงที่ลอยแล้ว</p>
+            <p id="admKrathongs" class="text-2xl font-bold text-amber-300 mt-1">0</p>
+          </div>
+          <div class="bg-slate-950/50 border border-white/10 rounded-2xl p-4">
+            <p class="text-xs text-slate-400">แบบกระทงยอดนิยม</p>
+            <p id="admPopular" class="text-base sm:text-lg font-bold text-pink-300 mt-1 truncate">-</p>
+          </div>
+        </div>
+
+        <input id="adminSearch" type="text" placeholder="ค้นหาชื่อ, คำอธิษฐาน หรือแบบกระทงเพื่อจัดการ..." class="w-full px-4 py-2.5 rounded-xl bg-slate-900/80 border border-white/15 focus:outline-none focus:border-amber-400 text-white">
+
+        <div id="adminList" class="space-y-2.5"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="fixed top-20 left-1/2 -translate-x-1/2 z-[120] glass px-5 py-2.5 rounded-full text-sm font-medium text-amber-200 shadow-xl opacity-0 pointer-events-none transition-all duration-300"></div>
+
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzg4hjRaNUJlTKjjtf0F8LODz6JGhlGmcuq2i2_ViqCeXl3c6eRindaKLUgprCDWwoS/exec";
+
+    const CATEGORIES = ["ทั้งหมด", "ไทยดั้งเดิม", "รักษ์โลกและขนมปัง", "น่ารักและพาสเทล", "แฟนตาซีและนีออน"];
+
+    const KRATHONGS = [
+      { id: "k1", name: "ใบตองคลาสสิก", category: "ไทยดั้งเดิม", base: "lotus", c1: "#15803d", c2: "#22c55e", c3: "#facc15", dec: "classic" },
+      { id: "k2", name: "กลีบผกา", category: "ไทยดั้งเดิม", base: "lotus", c1: "#166534", c2: "#f472b6", c3: "#fde047", dec: "petal" },
+      { id: "k3", name: "ใบตองทองคำ", category: "ไทยดั้งเดิม", base: "lotus", c1: "#a16207", c2: "#facc15", c3: "#fef08a", dec: "gold" },
+      { id: "k4", name: "กะลามะพร้าว", category: "ไทยดั้งเดิม", base: "shell", c1: "#78350f", c2: "#b45309", c3: "#fde047", dec: "shell" },
+      { id: "k5", name: "กาบกล้วย", category: "ไทยดั้งเดิม", base: "boat", c1: "#3f6212", c2: "#84cc16", c3: "#fb923c", dec: "banana" },
+      { id: "k6", name: "ใบเตยหอม", category: "ไทยดั้งเดิม", base: "lotus", c1: "#047857", c2: "#34d399", c3: "#ffffff", dec: "pandan" },
+      { id: "k7", name: "ดอกบัวหลวงชมพู", category: "ไทยดั้งเดิม", base: "lotus", c1: "#be185d", c2: "#f472b6", c3: "#fbcfe8", dec: "lotusPink" },
+      { id: "k8", name: "ดอกบัวขาวบริสุทธิ์", category: "ไทยดั้งเดิม", base: "lotus", c1: "#cbd5e1", c2: "#f8fafc", c3: "#fde047", dec: "lotusWhite" },
+
+      { id: "k9", name: "ขนมปังรูปเต่า", category: "รักษ์โลกและขนมปัง", base: "bread", c1: "#d97706", c2: "#4ade80", c3: "#fef08a", dec: "turtle" },
+      { id: "k10", name: "ขนมปังรูปปลาคาร์ป", category: "รักษ์โลกและขนมปัง", base: "bread", c1: "#ea580c", c2: "#fb923c", c3: "#ffffff", dec: "koi" },
+      { id: "k11", name: "โคนไอศกรีมสายรุ้ง", category: "รักษ์โลกและขนมปัง", base: "cone", c1: "#f472b6", c2: "#38bdf8", c3: "#fde047", dec: "cone" },
+      { id: "k12", name: "ขนมปังหน้ายิ้ม", category: "รักษ์โลกและขนมปัง", base: "bread", c1: "#b45309", c2: "#fcd34d", c3: "#f43f5e", dec: "smile" },
+      { id: "k13", name: "กระทงน้ำแข็งใส", category: "รักษ์โลกและขนมปัง", base: "ice", c1: "#0284c7", c2: "#7dd3fc", c3: "#e0f2fe", dec: "ice" },
+      { id: "k14", name: "กระทงเปลือกส้มโอ", category: "รักษ์โลกและขนมปัง", base: "shell", c1: "#65a30d", c2: "#bef264", c3: "#fb7185", dec: "pomelo" },
+      { id: "k15", name: "กระทงดอกดาวเรือง", category: "รักษ์โลกและขนมปัง", base: "lotus", c1: "#ca8a04", c2: "#facc15", c3: "#f97316", dec: "marigold" },
+      { id: "k16", name: "กระทงข้าวโพด", category: "รักษ์โลกและขนมปัง", base: "lotus", c1: "#4d7c0f", c2: "#fde047", c3: "#eab308", dec: "corn" },
+
+      { id: "k17", name: "กระทงน้องแมว", category: "น่ารักและพาสเทล", base: "animal", c1: "#fbcfe8", c2: "#f472b6", c3: "#ffffff", dec: "cat" },
+      { id: "k18", name: "น้องหมีพาสเทล", category: "น่ารักและพาสเทล", base: "animal", c1: "#d6b49c", c2: "#fde68a", c3: "#f9a8d4", dec: "bear" },
+      { id: "k19", name: "กระต่ายชมพู", category: "น่ารักและพาสเทล", base: "animal", c1: "#fda4af", c2: "#fff1f2", c3: "#fbcfe8", dec: "rabbit" },
+      { id: "k20", name: "เป็ดเหลือง", category: "น่ารักและพาสเทล", base: "animal", c1: "#facc15", c2: "#fef08a", c3: "#f97316", dec: "duck" },
+      { id: "k21", name: "ชิบะอินุ", category: "น่ารักและพาสเทล", base: "animal", c1: "#f59e0b", c2: "#fef3c7", c3: "#78350f", dec: "shiba" },
+      { id: "k22", name: "แพนด้า", category: "น่ารักและพาสเทล", base: "animal", c1: "#f8fafc", c2: "#1e293b", c3: "#86efac", dec: "panda" },
+      { id: "k23", name: "เมฆสายรุ้งพาสเทล", category: "น่ารักและพาสเทล", base: "cloud", c1: "#bae6fd", c2: "#fbcfe8", c3: "#fef08a", dec: "rainbow" },
+      { id: "k24", name: "หัวใจคู่รัก", category: "น่ารักและพาสเทล", base: "cloud", c1: "#f43f5e", c2: "#fb7185", c3: "#fda4af", dec: "heart" },
+
+      { id: "k25", name: "ไซเบอร์พังก์นีออน", category: "แฟนตาซีและนีออน", base: "cyber", c1: "#06b6d4", c2: "#d946ef", c3: "#22d3ee", dec: "neon" },
+      { id: "k26", name: "กาแล็กซีดวงดาว", category: "แฟนตาซีและนีออน", base: "cyber", c1: "#312e81", c2: "#818cf8", c3: "#fde047", dec: "galaxy" },
+      { id: "k27", name: "คริสตัลน้ำแข็ง", category: "แฟนตาซีและนีออน", base: "ice", c1: "#38bdf8", c2: "#a5f3fc", c3: "#c084fc", dec: "crystal" },
+      { id: "k28", name: "พญานาคเรืองแสง", category: "แฟนตาซีและนีออน", base: "boat", c1: "#059669", c2: "#34d399", c3: "#facc15", dec: "naga" },
+      { id: "k29", name: "ฟีนิกซ์เพลิง", category: "แฟนตาซีและนีออน", base: "lotus", c1: "#dc2626", c2: "#f97316", c3: "#fde047", dec: "phoenix" },
+      { id: "k30", name: "ดอกบัวซากุระ", category: "แฟนตาซีและนีออน", base: "lotus", c1: "#ec4899", c2: "#fbcfe8", c3: "#fff1f2", dec: "sakura" },
+      { id: "k31", name: "เรือสุพรรณหงส์มินิ", category: "แฟนตาซีและนีออน", base: "boat", c1: "#b45309", c2: "#facc15", c3: "#ef4444", dec: "swan" },
+      { id: "k32", name: "ยูเอฟโอลอยน้ำ", category: "แฟนตาซีและนีออน", base: "cyber", c1: "#64748b", c2: "#38bdf8", c3: "#4ade80", dec: "ufo" }
+    ];
+
+    const MOCK_INITIAL = [
+      { id: "m1", timestamp: "24/11/2026 20:10:05", name: "เอ็ม", wish: "ขอให้เรียนจบราบรื่น มีความสุขทุกวัน", krathongId: "k25", krathongName: "ไซเบอร์พังก์นีออน", category: "แฟนตาซีและนีออน" },
+      { id: "m2", timestamp: "24/11/2026 20:14:22", name: "ฟ้าใส", wish: "ขอให้ครอบครัวแข็งแรง ร่ำรวยเงินทอง", krathongId: "k7", krathongName: "ดอกบัวหลวงชมพู", category: "ไทยดั้งเดิม" },
+      { id: "m3", timestamp: "24/11/2026 20:18:40", name: "ต้นกล้า", wish: "ขอให้สิ่งไม่ดีลอยหายไปกับสายน้ำ", krathongId: "k9", krathongName: "ขนมปังรูปเต่า", category: "รักษ์โลกและขนมปัง" },
+      { id: "m4", timestamp: "24/11/2026 20:22:11", name: "มินนี่", wish: "ขอให้เจอแต่คนดีๆ และรอยยิ้มตลอดปี", krathongId: "k17", krathongName: "กระทงน้องแมว", category: "น่ารักและพาสเทล" },
+      { id: "m5", timestamp: "24/11/2026 20:25:30", name: "บอส", wish: "ขอให้สอบผ่านทุกวิชาและได้งานที่ชอบ", krathongId: "k31", krathongName: "เรือสุพรรณหงส์มินิ", category: "แฟนตาซีและนีออน" },
+      { id: "m6", timestamp: "24/11/2026 20:28:15", name: "แพรวา", wish: "ขอให้ความรักสดใสเหมือนพระจันทร์เต็มดวง", krathongId: "k24", krathongName: "หัวใจคู่รัก", category: "น่ารักและพาสเทล" },
+      { id: "m7", timestamp: "24/11/2026 20:31:50", name: "เจมส์", wish: "ขอให้สุขภาพแข็งแรง เดินทางปลอดภัย", krathongId: "k3", krathongName: "ใบตองทองคำ", category: "ไทยดั้งเดิม" },
+      { id: "m8", timestamp: "24/11/2026 20:35:02", name: "ใบเฟิร์น", wish: "ขอให้ปีหน้าเป็นปีที่ใจดีกับเราเยอะๆ", krathongId: "k11", krathongName: "โคนไอศกรีมสายรุ้ง", category: "รักษ์โลกและขนมปัง" }
+    ];
+
+    function buildKrathongSVG(kId, size = 100) {
+      const k = KRATHONGS.find(x => x.id === kId) || KRATHONGS[0];
+      let body = "";
+      let deco = "";
+
+      if (k.base === "lotus") {
+        body = `
+          <ellipse cx="60" cy="86" rx="44" ry="12" fill="${k.c1}"/>
+          <path d="M18 82 Q30 56 46 78 Q60 48 74 78 Q90 56 102 82 Z" fill="${k.c2}"/>
+          <path d="M26 84 Q42 58 60 76 Q78 58 94 84 Z" fill="${k.c3}" opacity="0.9"/>
+          <ellipse cx="60" cy="88" rx="38" ry="8" fill="${k.c1}" opacity="0.65"/>
+        `;
+      } else if (k.base === "shell") {
+        body = `
+          <path d="M18 76 C18 98 102 98 102 76 Z" fill="${k.c1}"/>
+          <ellipse cx="60" cy="76" rx="42" ry="11" fill="${k.c2}"/>
+          <circle cx="42" cy="74" r="6" fill="${k.c3}"/>
+          <circle cx="78" cy="74" r="6" fill="${k.c3}"/>
+        `;
+      } else if (k.base === "boat") {
+        body = `
+          <path d="M10 74 Q22 96 60 96 Q98 96 110 74 Q94 82 60 82 Q26 82 10 74 Z" fill="${k.c1}"/>
+          <path d="M10 74 Q14 54 24 62 Q18 70 24 78 Z" fill="${k.c2}"/>
+          <path d="M110 74 Q106 54 96 62 Q102 70 96 78 Z" fill="${k.c2}"/>
+          <ellipse cx="60" cy="78" rx="34" ry="7" fill="${k.c3}" opacity="0.85"/>
+        `;
+      } else if (k.base === "bread") {
+        body = `
+          <ellipse cx="60" cy="82" rx="42" ry="15" fill="${k.c1}"/>
+          <ellipse cx="60" cy="76" rx="34" ry="12" fill="${k.c2}"/>
+        `;
+      } else if (k.base === "cone") {
+        body = `
+          <ellipse cx="60" cy="86" rx="42" ry="11" fill="#d97706"/>
+          <polygon points="24,84 36,56 48,84" fill="${k.c1}"/>
+          <polygon points="48,84 60,52 72,84" fill="${k.c2}"/>
+          <polygon points="72,84 84,56 96,84" fill="${k.c3}"/>
+        `;
+      } else if (k.base === "ice") {
+        body = `
+          <polygon points="18,84 32,64 60,58 88,64 102,84 84,95 36,95" fill="${k.c1}" opacity="0.88"/>
+          <polygon points="28,82 42,64 60,62 78,64 92,82 60,90" fill="${k.c2}" opacity="0.85"/>
+          <polygon points="44,78 60,54 76,78" fill="${k.c3}" opacity="0.9"/>
+        `;
+      } else if (k.base === "animal") {
+        body = `
+          <ellipse cx="60" cy="84" rx="40" ry="14" fill="${k.c1}"/>
+          <circle cx="60" cy="70" r="22" fill="${k.c1}" stroke="${k.c2}" stroke-width="2"/>
+        `;
+      } else if (k.base === "cloud") {
+        body = `
+          <circle cx="36" cy="82" r="14" fill="${k.c1}"/>
+          <circle cx="60" cy="80" r="18" fill="${k.c2}"/>
+          <circle cx="84" cy="82" r="14" fill="${k.c1}"/>
+          <ellipse cx="60" cy="88" rx="38" ry="8" fill="${k.c3}" opacity="0.75"/>
+        `;
+      } else if (k.base === "cyber") {
+        body = `
+          <polygon points="16,82 32,68 88,68 104,82 88,94 32,94" fill="${k.c1}" stroke="${k.c3}" stroke-width="2"/>
+          <polygon points="28,80 42,70 78,70 92,80 78,88 42,88" fill="${k.c2}" opacity="0.85"/>
+        `;
+      }
+
+      if (k.dec === "turtle") {
+        deco = `<circle cx="96" cy="76" r="8" fill="#4ade80"/><circle cx="98" cy="74" r="1.5" fill="#0f172a"/><circle cx="34" cy="88" r="5" fill="#22c55e"/><circle cx="84" cy="88" r="5" fill="#22c55e"/>`;
+      } else if (k.dec === "koi") {
+        deco = `<polygon points="10,70 24,80 10,90" fill="#fb923c"/><circle cx="90" cy="75" r="2.5" fill="#0f172a"/><circle cx="68" cy="76" r="5" fill="#ffffff"/>`;
+      } else if (k.dec === "smile") {
+        deco = `<circle cx="48" cy="74" r="3" fill="#1e293b"/><circle cx="72" cy="74" r="3" fill="#1e293b"/><path d="M50 82 Q60 90 70 82" stroke="#1e293b" stroke-width="2.5" fill="none" stroke-linecap="round"/>`;
+      } else if (k.dec === "cat") {
+        deco = `<polygon points="40,60 44,44 54,54" fill="${k.c2}"/><polygon points="80,60 76,44 66,54" fill="${k.c2}"/><circle cx="52" cy="69" r="2.5" fill="#1e293b"/><circle cx="68" cy="69" r="2.5" fill="#1e293b"/><polygon points="58,73 62,73 60,76" fill="#f43f5e"/>`;
+      } else if (k.dec === "bear") {
+        deco = `<circle cx="42" cy="54" r="7" fill="${k.c1}" stroke="${k.c2}" stroke-width="2"/><circle cx="78" cy="54" r="7" fill="${k.c1}" stroke="${k.c2}" stroke-width="2"/><circle cx="52" cy="68" r="2.5" fill="#1e293b"/><circle cx="68" cy="68" r="2.5" fill="#1e293b"/><ellipse cx="60" cy="74" rx="5" ry="3.5" fill="#78350f"/>`;
+      } else if (k.dec === "rabbit") {
+        deco = `<ellipse cx="48" cy="44" rx="5" ry="13" fill="${k.c2}" stroke="${k.c1}" stroke-width="2"/><ellipse cx="72" cy="44" rx="5" ry="13" fill="${k.c2}" stroke="${k.c1}" stroke-width="2"/><circle cx="52" cy="69" r="2.5" fill="#1e293b"/><circle cx="68" cy="69" r="2.5" fill="#1e293b"/><circle cx="60" cy="74" r="2.5" fill="#fb7185"/>`;
+      } else if (k.dec === "duck") {
+        deco = `<circle cx="52" cy="67" r="2.5" fill="#1e293b"/><circle cx="68" cy="67" r="2.5" fill="#1e293b"/><ellipse cx="60" cy="74" rx="8" ry="4" fill="#f97316"/>`;
+      } else if (k.dec === "shiba") {
+        deco = `<polygon points="40,60 45,45 55,55" fill="${k.c1}"/><polygon points="80,60 75,45 65,55" fill="${k.c1}"/><ellipse cx="60" cy="75" rx="14" ry="9" fill="${k.c2}"/><circle cx="52" cy="68" r="2.5" fill="#1e293b"/><circle cx="68" cy="68" r="2.5" fill="#1e293b"/><circle cx="60" cy="73" r="2.5" fill="#1e293b"/>`;
+      } else if (k.dec === "panda") {
+        deco = `<circle cx="42" cy="54" r="7" fill="#1e293b"/><circle cx="78" cy="54" r="7" fill="#1e293b"/><ellipse cx="51" cy="69" rx="5" ry="4" fill="#1e293b"/><ellipse cx="69" cy="69" rx="5" ry="4" fill="#1e293b"/><circle cx="51" cy="68" r="1.5" fill="#fff"/><circle cx="69" cy="68" r="1.5" fill="#fff"/>`;
+      } else if (k.dec === "rainbow") {
+        deco = `<path d="M36 74 A24 24 0 0 1 84 74" stroke="#f472b6" stroke-width="4" fill="none"/><path d="M41 74 A19 19 0 0 1 79 74" stroke="#fde047" stroke-width="4" fill="none"/><path d="M46 74 A14 14 0 0 1 74 74" stroke="#38bdf8" stroke-width="4" fill="none"/>`;
+      } else if (k.dec === "heart") {
+        deco = `<path d="M60 82 C44 68 44 54 54 54 C58 54 60 58 60 58 C60 58 62 54 66 54 C76 54 76 68 60 82 Z" fill="#fff1f2" opacity="0.9"/>`;
+      } else if (k.dec === "neon" || k.dec === "ufo") {
+        deco = `<circle cx="34" cy="82" r="3" fill="#4ade80"/><circle cx="60" cy="85" r="3" fill="#fde047"/><circle cx="86" cy="82" r="3" fill="#f472b6"/>`;
+      } else if (k.dec === "galaxy") {
+        deco = `<circle cx="36" cy="76" r="2" fill="#fff"/><circle cx="82" cy="75" r="2.5" fill="#fde047"/><circle cx="48" cy="84" r="1.8" fill="#c084fc"/><circle cx="74" cy="84" r="2" fill="#38bdf8"/>`;
+      } else if (k.dec === "swan" || k.dec === "naga") {
+        deco = `<circle cx="17" cy="61" r="2.2" fill="#fef08a"/><circle cx="60" cy="86" r="3" fill="#fde047"/><circle cx="44" cy="85" r="2.5" fill="#f87171"/><circle cx="76" cy="85" r="2.5" fill="#f87171"/>`;
+      } else if (k.dec === "marigold" || k.dec === "corn" || k.dec === "gold") {
+        deco = `<circle cx="36" cy="78" r="5" fill="#f59e0b"/><circle cx="60" cy="76" r="5.5" fill="#fbbf24"/><circle cx="84" cy="78" r="5" fill="#f59e0b"/>`;
+      } else if (k.dec === "sakura" || k.dec === "lotusPink") {
+        deco = `<circle cx="40" cy="78" r="4" fill="#fff1f2"/><circle cx="80" cy="78" r="4" fill="#fff1f2"/>`;
+      }
+
+      const candle = `
+        <line x1="53" y1="68" x2="50" y2="42" stroke="#92400e" stroke-width="1.5"/>
+        <line x1="67" y1="68" x2="70" y2="42" stroke="#92400e" stroke-width="1.5"/>
+        <rect x="57" y="46" width="6" height="22" rx="2" fill="#fef08a" stroke="#eab308" stroke-width="1"/>
+        <g class="candle-flame">
+          <path d="M60 28 C66 36 65 44 60 46 C55 44 54 36 60 28 Z" fill="#f97316"/>
+          <path d="M60 33 C63 38 62 43 60 45 C58 43 57 38 60 33 Z" fill="#fef08a"/>
+        </g>
+        <ellipse cx="60" cy="96" rx="46" ry="5" fill="rgba(186,230,253,0.18)"/>
+      `;
+
+      return `<svg viewBox="0 0 120 105" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg">${body}${deco}${candle}</svg>`;
+    }
+
+    const state = {
+      isLive: SCRIPT_URL && !SCRIPT_URL.includes("ใส่_URL_WEB_APP_ที่นี่"),
+      visitors: 128,
+      krathongs: [],
+      selectedCategory: "ทั้งหมด",
+      selectedKrathongId: "k1",
+      adminPassword: "",
+      floatingNodes: []
+    };
+
+    const $ = id => document.getElementById(id);
+
+    function showToast(msg) {
+      const t = $("toast");
+      t.textContent = msg;
+      t.classList.remove("opacity-0", "translate-y-2");
+      t.classList.add("opacity-100");
+      clearTimeout(t._timer);
+      t._timer = setTimeout(() => {
+        t.classList.remove("opacity-100");
+        t.classList.add("opacity-0", "translate-y-2");
+      }, 2800);
+    }
+
+    function openModal(id) {
+      $(id).classList.add("active");
+    }
+
+    function closeModal(id) {
+      $(id).classList.remove("active");
+    }
+
+    function closeAllModals() {
+      document.querySelectorAll(".modal-backdrop.active").forEach(m => m.classList.remove("active"));
+    }
+
+    function updateStatsUI() {
+      $("statVisitors").textContent = state.visitors.toLocaleString();
+      $("statKrathongs").textContent = state.krathongs.length.toLocaleString();
+      $("modeBadge").textContent = state.isLive ? "เชื่อมต่อ Google Sheets แล้ว" : "โหมดพรีวิว (Mock Data)";
+    }
+
+    function initEnvironment() {
+      const sky = $("skyLayer");
+      const isMobile = window.innerWidth < 768;
+      const starCount = isMobile ? 45 : 95;
+      for (let i = 0; i < starCount; i++) {
+        const s = document.createElement("div");
+        s.className = "star";
+        const sz = Math.random() * 2.2 + 1;
+        s.style.width = sz + "px";
+        s.style.height = sz + "px";
+        s.style.left = Math.random() * 100 + "%";
+        s.style.top = Math.random() * 95 + "%";
+        s.style.setProperty("--dur", (2 + Math.random() * 3.5) + "s");
+        sky.appendChild(s);
+      }
+
+      const lanternCount = isMobile ? 5 : 10;
+      for (let i = 0; i < lanternCount; i++) {
+        const l = document.createElement("div");
+        l.className = "lantern";
+        l.style.left = (8 + Math.random() * 84) + "%";
+        l.style.bottom = "0%";
+        l.style.setProperty("--dur", (14 + Math.random() * 14) + "s");
+        l.style.setProperty("--drift", ((Math.random() - 0.5) * 90) + "px");
+        l.style.animationDelay = (-Math.random() * 20) + "s";
+        sky.appendChild(l);
+      }
+
+      const river = $("riverLayer");
+      for (let i = 0; i < 6; i++) {
+        const w = document.createElement("div");
+        w.className = "wave-line";
+        w.style.top = (12 + i * 16) + "%";
+        w.style.animationDelay = (-i * 1.1) + "s";
+        river.appendChild(w);
+      }
+    }
+
+    const fxCanvas = $("fxCanvas");
+    const fxCtx = fxCanvas.getContext("2d");
+    let particles = [];
+
+    function resizeCanvas() {
+      fxCanvas.width = window.innerWidth;
+      fxCanvas.height = window.innerHeight;
+    }
+
+    function spawnFirework(x, y) {
+      const colors = ["#fde047", "#f472b6", "#38bdf8", "#4ade80", "#fb923c", "#c084fc"];
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      const count = window.innerWidth < 768 ? 24 : 42;
+      for (let i = 0; i < count; i++) {
+        const angle = (Math.PI * 2 * i) / count;
+        const speed = 1.5 + Math.random() * 3.6;
+        particles.push({
+          x, y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          alpha: 1,
+          color,
+          size: 1.8 + Math.random() * 2
+        });
+      }
+    }
+
+    function celebrateFireworks() {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      spawnFirework(w * 0.25, h * 0.22);
+      setTimeout(() => spawnFirework(w * 0.5, h * 0.16), 240);
+      setTimeout(() => spawnFirework(w * 0.75, h * 0.24), 480);
+    }
+
+    function animateLoop() {
+      fxCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.04;
+        p.alpha -= 0.016;
+        if (p.alpha <= 0) {
+          particles.splice(i, 1);
+          continue;
+        }
+        fxCtx.globalAlpha = p.alpha;
+        fxCtx.fillStyle = p.color;
+        fxCtx.beginPath();
+        fxCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        fxCtx.fill();
+      }
+      fxCtx.globalAlpha = 1;
+
+      const riverW = window.innerWidth;
+      for (let i = 0; i < state.floatingNodes.length; i++) {
+        const f = state.floatingNodes[i];
+        f.x -= f.speed;
+        if (f.x < -140) {
+          f.x = riverW + 40 + Math.random() * 120;
+        }
+        f.el.style.transform = `translate3d(${f.x}px, 0, 0)`;
+      }
+      requestAnimationFrame(animateLoop);
+    }
+
+    function addFloatingKrathong(item, startFromRight = false) {
+      const river = $("riverLayer");
+      const lane = Math.random();
+      const topPct = 6 + lane * 66;
+      const isMobile = window.innerWidth < 768;
+      const baseSize = isMobile ? 64 : 84;
+      const size = Math.round(baseSize + lane * (isMobile ? 28 : 42));
+      const speed = 0.28 + lane * 0.48;
+      const x = startFromRight ? (window.innerWidth - size - 20) : (Math.random() * (window.innerWidth + 100));
+
+      const wrap = document.createElement("div");
+      wrap.className = "krathong-node";
+      wrap.style.top = topPct + "%";
+      wrap.style.zIndex = Math.round(10 + lane * 60);
+      wrap.style.transform = `translate3d(${x}px, 0, 0)`;
+      wrap.dataset.id = item.id;
+
+      wrap.innerHTML = `
+        <div class="krathong-tooltip absolute -top-9 left-1/2 whitespace-nowrap bg-slate-950/85 border border-amber-300/30 text-amber-100 text-xs px-2.5 py-1 rounded-full shadow-lg">
+          ${escapeHtml(item.name)}
+        </div>
+        <div class="krathong-bob">${buildKrathongSVG(item.krathongId, size)}</div>
+      `;
+
+      wrap.addEventListener("click", () => openWishDetail(item));
+      river.appendChild(wrap);
+      state.floatingNodes.push({ id: item.id, el: wrap, x, speed });
+    }
+
+    function renderRiverKrathongs() {
+      state.floatingNodes.forEach(f => f.el.remove());
+      state.floatingNodes = [];
+      const maxShow = window.innerWidth < 768 ? 14 : 24;
+      state.krathongs.slice(0, maxShow).forEach(item => addFloatingKrathong(item, false));
+    }
+
+    function openWishDetail(item) {
+      $("wishModalSvg").innerHTML = buildKrathongSVG(item.krathongId, 140);
+      $("wishModalCat").textContent = item.category;
+      $("wishModalName").textContent = item.name;
+      $("wishModalKName").textContent = "แบบกระทง: " + item.krathongName;
+      $("wishModalText").textContent = `"${item.wish}"`;
+      $("wishModalTime").textContent = "ลอยเมื่อ " + item.timestamp;
+      openModal("modalWish");
+    }
+
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>"']/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]));
+    }
+
+    function renderCategoryTabs() {
+      const box = $("catTabs");
+      box.innerHTML = "";
+      CATEGORIES.forEach(cat => {
+        const btn = document.createElement("button");
+        const active = state.selectedCategory === cat;
+        btn.className = `touch-btn shrink-0 px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium transition ${active ? "bg-amber-400 text-slate-950" : "bg-white/10 text-slate-200 hover:bg-white/20"}`;
+        btn.textContent = cat;
+        btn.addEventListener("click", () => {
+          state.selectedCategory = cat;
+          renderCategoryTabs();
+          renderKrathongGrid();
+        });
+        box.appendChild(btn);
+      });
+    }
+
+    function updatePreview() {
+      const k = KRATHONGS.find(x => x.id === state.selectedKrathongId) || KRATHONGS[0];
+      $("previewBox").innerHTML = buildKrathongSVG(k.id, 112);
+      $("previewCat").textContent = k.category;
+      $("previewName").textContent = k.name;
+    }
+
+    function renderKrathongGrid() {
+      const grid = $("krathongGrid");
+      grid.innerHTML = "";
+      const list = state.selectedCategory === "ทั้งหมด"
+        ? KRATHONGS
+        : KRATHONGS.filter(k => k.category === state.selectedCategory);
+
+      list.forEach(k => {
+        const selected = k.id === state.selectedKrathongId;
+        const card = document.createElement("button");
+        card.type = "button";
+        card.className = `p-2 rounded-2xl border flex flex-col items-center gap-1 transition text-center ${selected ? "bg-amber-400/20 border-amber-400 shadow-lg shadow-amber-500/20" : "bg-slate-950/40 border-white/10 hover:bg-white/10"}`;
+        card.innerHTML = `
+          <div class="w-16 h-16 flex items-center justify-center">${buildKrathongSVG(k.id, 62)}</div>
+          <span class="text-[11px] leading-tight line-clamp-2 text-slate-100">${k.name}</span>
+        `;
+        card.addEventListener("click", () => {
+          state.selectedKrathongId = k.id;
+          updatePreview();
+          renderKrathongGrid();
+        });
+        grid.appendChild(card);
+      });
+    }
+
+    function renderWishBoard(keyword = "") {
+      const box = $("boardList");
+      const q = keyword.trim().toLowerCase();
+      const filtered = state.krathongs.filter(k =>
+        k.name.toLowerCase().includes(q) ||
+        k.wish.toLowerCase().includes(q) ||
+        k.krathongName.toLowerCase().includes(q)
+      );
+
+      if (!filtered.length) {
+        box.innerHTML = `<div class="col-span-full text-center py-10 text-slate-400 text-sm">ไม่พบคำอธิษฐานที่ค้นหา</div>`;
+        return;
+      }
+
+      box.innerHTML = "";
+      filtered.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "bg-slate-950/50 border border-white/10 rounded-2xl p-3.5 flex gap-3 items-start hover:border-amber-400/40 transition cursor-pointer";
+        card.innerHTML = `
+          <div class="w-14 h-14 shrink-0 flex items-center justify-center bg-slate-900/80 rounded-xl">${buildKrathongSVG(item.krathongId, 52)}</div>
+          <div class="min-w-0 flex-1 space-y-1">
+            <div class="flex items-center justify-between gap-2">
+              <h4 class="font-semibold text-sm text-amber-200 truncate">${escapeHtml(item.name)}</h4>
+              <span class="text-[10px] text-slate-400 shrink-0">${escapeHtml(item.timestamp.split(" ")[1] || "")}</span>
+            </div>
+            <p class="text-xs text-slate-200 line-clamp-2">${escapeHtml(item.wish)}</p>
+            <p class="text-[10px] text-slate-400">${escapeHtml(item.krathongName)}</p>
+          </div>
+        `;
+        card.addEventListener("click", () => {
+          closeModal("modalBoard");
+          openWishDetail(item);
+        });
+        box.appendChild(card);
+      });
+    }
+
+    function renderAdminDashboard(keyword = "") {
+      $("admVisitors").textContent = state.visitors.toLocaleString();
+      $("admKrathongs").textContent = state.krathongs.length.toLocaleString();
+
+      const counts = {};
+      state.krathongs.forEach(k => { counts[k.krathongName] = (counts[k.krathongName] || 0) + 1; });
+      const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+      $("admPopular").textContent = top ? `${top[0]} (${top[1]})` : "-";
+
+      const q = keyword.trim().toLowerCase();
+      const filtered = state.krathongs.filter(k =>
+        k.name.toLowerCase().includes(q) ||
+        k.wish.toLowerCase().includes(q) ||
+        k.krathongName.toLowerCase().includes(q)
+      );
+
+      const list = $("adminList");
+      if (!filtered.length) {
+        list.innerHTML = `<div class="text-center py-8 text-slate-400 text-sm">ไม่มีรายการข้อมูล</div>`;
+        return;
+      }
+
+      list.innerHTML = "";
+      filtered.forEach(item => {
+        const row = document.createElement("div");
+        row.className = "bg-slate-950/55 border border-white/10 rounded-2xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3";
+        row.innerHTML = `
+          <div class="flex items-start gap-3 min-w-0">
+            <div class="w-12 h-12 shrink-0 flex items-center justify-center bg-slate-900 rounded-xl">${buildKrathongSVG(item.krathongId, 46)}</div>
+            <div class="min-w-0">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="font-semibold text-sm text-amber-200">${escapeHtml(item.name)}</span>
+                <span class="text-[11px] px-2 py-0.5 rounded-full bg-white/10 text-slate-300">${escapeHtml(item.krathongName)}</span>
+                <span class="text-[11px] text-slate-400">${escapeHtml(item.timestamp)}</span>
+              </div>
+              <p class="text-xs sm:text-sm text-slate-200 mt-1 break-words">${escapeHtml(item.wish)}</p>
+            </div>
+          </div>
+          <button class="btn-del touch-btn shrink-0 px-3.5 py-2 rounded-xl bg-rose-500/20 hover:bg-rose-500/35 text-rose-200 text-xs font-medium transition">🗑️ ลบ</button>
+        `;
+        row.querySelector(".btn-del").addEventListener("click", () => handleDeleteKrathong(item.id));
+        list.appendChild(row);
+      });
+    }
+
+    async function fetchInitialData(action = "init") {
+      if (!state.isLive) {
+        const saved = localStorage.getItem("mock_krathongs_v1");
+        state.krathongs = saved ? JSON.parse(saved) : [...MOCK_INITIAL];
+        const v = Number(localStorage.getItem("mock_visitors_v1") || 127) + (action === "init" ? 1 : 0);
+        state.visitors = v;
+        localStorage.setItem("mock_visitors_v1", String(v));
+        updateStatsUI();
+        renderRiverKrathongs();
+        return;
+      }
+
+      try {
+        const res = await fetch(`${SCRIPT_URL}?action=${action}`);
+        const data = await res.json();
+        if (data.status === "success") {
+          state.visitors = data.visitors;
+          state.krathongs = data.krathongs || [];
+          updateStatsUI();
+          renderRiverKrathongs();
+        }
+      } catch (err) {
+        showToast("เชื่อมต่อ Google Sheets ไม่สำเร็จ กำลังใช้ข้อมูลจำลอง");
+        state.isLive = false;
+        state.krathongs = [...MOCK_INITIAL];
+        updateStatsUI();
+        renderRiverKrathongs();
+      }
+    }
+
+    async function handleLaunchKrathong() {
+      const name = $("inputName").value.trim();
+      const wish = $("inputWish").value.trim();
+      if (!name) return showToast("กรุณากรอกชื่อผู้ลอย");
+      if (!wish) return showToast("กรุณากรอกคำอธิษฐาน");
+
+      const k = KRATHONGS.find(x => x.id === state.selectedKrathongId) || KRATHONGS[0];
+      const btn = $("btnLaunch");
+      btn.disabled = true;
+      btn.textContent = "กำลังปล่อยกระทง...";
+
+      const nowStr = new Date().toLocaleString("th-TH");
+      let newItem = {
+        id: "L" + Date.now(),
+        timestamp: nowStr,
+        name,
+        wish,
+        krathongId: k.id,
+        krathongName: k.name,
+        category: k.category
+      };
+
+      if (state.isLive) {
+        try {
+          const res = await fetch(SCRIPT_URL, {
+            method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify({
+              action: "add",
+              name,
+              wish,
+              krathongId: k.id,
+              krathongName: k.name,
+              category: k.category
+            })
+          });
+          const data = await res.json();
+          if (data.status === "success" && data.item) {
+            newItem = data.item;
+          }
+        } catch (err) {
+          showToast("บันทึกไม่สำเร็จ กรุณาลองใหม่");
+          btn.disabled = false;
+          btn.textContent = "อธิษฐานและปล่อยกระทง ✨";
+          return;
+        }
+      } else {
+        const updated = [newItem, ...state.krathongs];
+        localStorage.setItem("mock_krathongs_v1", JSON.stringify(updated));
+      }
+
+      state.krathongs.unshift(newItem);
+      updateStatsUI();
+      addFloatingKrathong(newItem, true);
+      closeModal("modalCreate");
+      celebrateFireworks();
+      showToast("ปล่อยกระทงและบันทึกคำอธิษฐานเรียบร้อยแล้ว 🪷");
+
+      $("inputName").value = "";
+      $("inputWish").value = "";
+      btn.disabled = false;
+      btn.textContent = "อธิษฐานและปล่อยกระทง ✨";
+    }
+
+    async function handleAdminLogin() {
+      const pass = $("adminPassInput").value.trim();
+      const errEl = $("adminLoginErr");
+      errEl.classList.add("hidden");
+      if (!pass) return;
+
+      if (state.isLive) {
+        try {
+          const res = await fetch(SCRIPT_URL, {
+            method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify({ action: "verify", password: pass })
+          });
+          const data = await res.json();
+          if (data.status !== "success") {
+            errEl.textContent = data.message || "รหัสผ่านไม่ถูกต้อง";
+            errEl.classList.remove("hidden");
+            return;
+          }
+        } catch (e) {
+          errEl.textContent = "ไม่สามารถตรวจสอบรหัสผ่านได้";
+          errEl.classList.remove("hidden");
+          return;
+        }
+      } else if (pass !== "1234") {
+        errEl.textContent = "รหัสผ่านไม่ถูกต้อง (โหมดพรีวิวใช้ 1234)";
+        errEl.classList.remove("hidden");
+        return;
+      }
+
+      state.adminPassword = pass;
+      $("adminPassInput").value = "";
+      closeModal("modalAdminLogin");
+      renderAdminDashboard();
+      openModal("modalAdminDash");
+    }
+
+    async function handleDeleteKrathong(id) {
+      if (!confirm("ต้องการลบคำอธิษฐานนี้ใช่หรือไม่?")) return;
+
+      if (state.isLive) {
+        try {
+          const res = await fetch(SCRIPT_URL, {
+            method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify({ action: "delete", id, password: state.adminPassword })
+          });
+          const data = await res.json();
+          if (data.status !== "success") {
+            return showToast(data.message || "ลบไม่สำเร็จ");
+          }
+        } catch (e) {
+          return showToast("เกิดข้อผิดพลาดในการเชื่อมต่อ");
+        }
+      }
+
+      state.krathongs = state.krathongs.filter(k => k.id !== id);
+      if (!state.isLive) {
+        localStorage.setItem("mock_krathongs_v1", JSON.stringify(state.krathongs));
+      }
+      const nodeIdx = state.floatingNodes.findIndex(f => f.id === id);
+      if (nodeIdx !== -1) {
+        state.floatingNodes[nodeIdx].el.remove();
+        state.floatingNodes.splice(nodeIdx, 1);
+      }
+      updateStatsUI();
+      renderAdminDashboard($("adminSearch").value);
+      showToast("ลบข้อมูลเรียบร้อยแล้ว");
+    }
+
+    document.querySelectorAll("[data-close]").forEach(btn => {
+      btn.addEventListener("click", () => closeModal(btn.dataset.close));
+    });
+
+    document.querySelectorAll(".modal-backdrop").forEach(modal => {
+      modal.addEventListener("click", e => {
+        if (e.target === modal) modal.classList.remove("active");
+      });
+    });
+
+    window.addEventListener("keydown", e => {
+      if (e.key === "Escape") closeAllModals();
+    });
+
+    $("skyLayer").addEventListener("click", e => {
+      spawnFirework(e.clientX, e.clientY);
+    });
+
+    $("btnOpenCreate").addEventListener("click", () => {
+      updatePreview();
+      openModal("modalCreate");
+    });
+
+    $("btnRandom").addEventListener("click", () => {
+      const pick = KRATHONGS[Math.floor(Math.random() * KRATHONGS.length)];
+      state.selectedKrathongId = pick.id;
+      state.selectedCategory = "ทั้งหมด";
+      renderCategoryTabs();
+      renderKrathongGrid();
+      updatePreview();
+    });
+
+    $("btnLaunch").addEventListener("click", handleLaunchKrathong);
+
+    $("btnOpenBoard").addEventListener("click", () => {
+      $("boardSearch").value = "";
+      renderWishBoard();
+      openModal("modalBoard");
+    });
+
+    $("boardSearch").addEventListener("input", e => renderWishBoard(e.target.value));
+
+    $("btnAdmin").addEventListener("click", () => {
+      if (state.adminPassword) {
+        renderAdminDashboard();
+        openModal("modalAdminDash");
+      } else {
+        $("adminLoginErr").classList.add("hidden");
+        openModal("modalAdminLogin");
+        setTimeout(() => $("adminPassInput").focus(), 100);
+      }
+    });
+
+    $("btnAdminSubmit").addEventListener("click", handleAdminLogin);
+    $("adminPassInput").addEventListener("keydown", e => {
+      if (e.key === "Enter") handleAdminLogin();
+    });
+
+    $("adminSearch").addEventListener("input", e => renderAdminDashboard(e.target.value));
+
+    $("btnAdminRefresh").addEventListener("click", async () => {
+      await fetchInitialData("list");
+      renderAdminDashboard($("adminSearch").value);
+      showToast("อัปเดตข้อมูลล่าสุดแล้ว");
+    });
+
+    $("btnAdminLogout").addEventListener("click", () => {
+      state.adminPassword = "";
+      closeModal("modalAdminDash");
+      showToast("ออกจากระบบหลังบ้านแล้ว");
+    });
+
+    window.addEventListener("resize", resizeCanvas);
+
+    resizeCanvas();
+    initEnvironment();
+    renderCategoryTabs();
+    renderKrathongGrid();
+    updatePreview();
+    fetchInitialData("init");
+    animateLoop();
+  </script>
+</body>
+</html>
